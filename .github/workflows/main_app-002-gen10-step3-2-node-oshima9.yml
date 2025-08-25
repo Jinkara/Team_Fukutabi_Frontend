@@ -24,6 +24,7 @@ jobs:
           node-version: '22.x'
 
       - name: npm install, build, and test
+        working-directory: ./frontend # ← ★追加！
       #1
         env:
           NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
