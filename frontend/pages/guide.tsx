@@ -1,5 +1,5 @@
 // frontend/pages/guide.tsx
-import styles from "../styles/guide.module.css";
+import styles from "../styles/Guide.module.css";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { FaChevronLeft, FaCamera, FaPlay, FaPause } from "react-icons/fa";

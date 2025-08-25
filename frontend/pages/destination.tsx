@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import styles from "../styles/destination.module.css";
+import styles from "../styles/Destination.module.css";
 
 // 使うフィールドに合わせてシンプルに
 type Prediction = {

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
-import styles from "../styles/index.module.css"; // 追加！
+import styles from "../styles/Index.module.css"; // 追加！
 
 export default function Splash() {
   const router = useRouter();

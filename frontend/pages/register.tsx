@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { registerUser } from "@/lib/api";  // からちゃん追加
 import Image from "next/image";
-import styles from "../styles/register.module.css";
+import styles from "../styles/Register.module.css";
 
 export default function Register() {
   const router = useRouter();
