@@ -36,11 +36,15 @@ jobs:
       #2
       - name: Copy artifact for deployment job
         run: |
-          mkdir deploy
+          mkdir -p deploy
           cp -r ./frontend/.next/standalone/. ./deploy
           mkdir -p ./deploy/.next/static # ← これも追加
           cp -r ./frontend/.next/static/. ./deploy/.next/static
           if [ -d "./frontend/public" ]; then cp -r ./frontend/public ./deploy/public; fi # ← これも追加
+
+      - name: Force start script to node server.js
+        run: |
+          node -e "const fs=require('fs'); const p='./deploy/package.json'; const j=JSON.parse(fs.readFileSync(p)); j.scripts=j.scripts||{}; j.scripts.start='node server.js'; fs.writeFileSync(p, JSON.stringify(j, null, 2)); console.log('start=', j.scripts.start)"
 
       - name: Zip artifact for deployment job
         # run: zip release.zip ./deploy -r #3
