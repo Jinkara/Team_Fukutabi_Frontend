@@ -38,10 +38,15 @@ jobs:
         run: |
           mkdir deploy
           cp -r ./frontend/.next/standalone/. ./deploy
+          mkdir -p ./deploy/.next/static # ← これも追加
           cp -r ./frontend/.next/static/. ./deploy/.next/static
+          if [ -d "./frontend/public" ]; then cp -r ./frontend/public ./deploy/public; fi # ← これも追加
 
       - name: Zip artifact for deployment job
-        run: zip release.zip ./deploy -r #3
+        # run: zip release.zip ./deploy -r #3
+        run: |
+          cd deploy
+          zip -r ../release.zip .   # ← 先頭に 'deploy/' を入れない
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -55,7 +60,7 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-          
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
