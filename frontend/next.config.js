@@ -15,6 +15,8 @@
 const BACKEND_ORIGIN = process.env.BACKEND_ORIGIN || 'https://app-002-gen10-step3-2-py-oshima9.azurewebsites.net/';
 
 const nextConfig = {
+    // ✅ ここに追加！
+  output: 'standalone',
   // 必要なら他のNext設定もここに追記
   async rewrites() {
     return [
