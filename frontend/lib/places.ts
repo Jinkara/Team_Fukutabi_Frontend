@@ -1,15 +1,8 @@
 import type { Category, Mode } from "./api";
 
-// こうなっていればOK
-export function colorNameByCategory(cat: Category): 'red' | 'green' | 'blue' {
-  switch (cat) {
-    case 'local':   return 'red';
-    case 'gourmet': return 'green';
-    case 'event':   return 'blue';
-    default:        return 'red';
-  }
+export function colorNameByCategory(cat: Category) {
+  return cat === "local" ? "red" : cat === "gourmet" ? "green" : "blue";
 }
-
 export function fmtDistance(m: number) {
   return m >= 1000 ? `${(m / 1000).toFixed(1)}km` : `${m}m`;
 }

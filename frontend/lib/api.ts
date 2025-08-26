@@ -28,10 +28,6 @@ export type Spot = {
   eta_min: number;     // 分
   distance_m: number;  // m
   category: Category;
-  // ★ 追加
-  photo_url?: string;
-  photoUrl?: string;   // camelCase互換
-
 };
 
 export type RecommendResponse = { spots: Spot[] };
@@ -86,7 +82,7 @@ const apiPostRaw = <T>(path: string, body: any, token?: string, init?: RequestIn
 // ====== recommend: POST /detour/recommend ======
 const RECOMMEND_EP = "/detour/search"; //きたな
 
-// ====== normalizeSpot ======
+// サーバーのキー揺れを吸収（きたな）
 export function normalizeSpot(raw: any): Spot {
   const meters =
     typeof raw.distance_m === "number"
@@ -95,27 +91,8 @@ export function normalizeSpot(raw: any): Spot {
       ? Math.round(raw.distance_km * 1000)
       : Number(raw.distance ?? 0);
 
-  // ★ ここを強化：raw.category / raw.cat / raw.detour_type / raw.detourType を一元マップ
-  const catRaw =
-    (raw.category ?? raw.cat ?? raw.detour_type ?? raw.detourType ?? "").toString().toLowerCase();
-
-  const category: Category =
-    catRaw === "gourmet" || catRaw === "food"
-      ? "gourmet"
-      : catRaw === "event"
-      ? "event"
-      : /* "spot" や 未定義は local に寄せる */ "local";
-
-  const photo =
-    raw.photo_url ??
-    raw.image_url ??
-    raw.photoUrl ??
-    raw.imageUrl ??
-    raw.photo?.url ??
-    raw.picture ??
-    (Array.isArray(raw.photos) && raw.photos.length > 0
-      ? raw.photos[0]?.url || raw.photos[0]
-      : undefined);
+  const cat = (raw.category ?? raw.cat) as Category;
+  const category: Category = cat === "gourmet" ? "gourmet" : cat === "event" ? "event" : "local";
 
   return {
     id: String(raw.id ?? raw.spot_id ?? ""),
@@ -127,41 +104,16 @@ export function normalizeSpot(raw: any): Spot {
     eta_min: Number(raw.eta_min ?? raw.eta ?? 0),
     distance_m: meters,
     category,
-    // ★ 追加
-    photo_url: typeof photo === "string" ? photo : undefined,
-    photoUrl: typeof photo === "string" ? photo : undefined,
   };
 }
-
 // DetourSuggestion → Spot 変換（型揃え）きたな
-// ====== DetourSuggestion → Spot 変換 ======
 function toSpot(s: DetourSuggestion): Spot {
-  const etaText = (s as any).eta_text as string | undefined; // "徒歩約9分・350m"
+  // eta_text から分数と距離(m)を抽出
+  const etaText = (s as any).eta_text as string | undefined; // "徒歩約9分・350m" 等
   const minMatch = etaText?.match(/(\d+)\s*分/);
   const meterMatch = etaText?.match(/(\d+)\s*m/);
   const etaMinFromText = minMatch ? Number(minMatch[1]) : undefined;
   const distMFromText = meterMatch ? Number(meterMatch[1]) : undefined;
-
-
-  // ★ ここを強化：category / detour_type の両対応
-  const catRaw = String(
-    (s as any).category ?? (s as any).detour_type ?? (s as any).detourType ?? ""
-  ).toLowerCase();
-
-  const category: Category =
-    catRaw === "gourmet" || catRaw === "food"
-      ? "gourmet"
-      : catRaw === "event"
-      ? "event"
-      : "local"; // "spot"や未定義はlocalへ
-      
-  const photo =
-    (s as any).photo_url ??
-    (s as any).photoUrl ??
-    (s as any).image_url ??
-    (s as any).imageUrl ??
-    (s as any).photo?.url ??
-    (s as any).picture;
 
   return {
     id: String(s.id),
@@ -183,11 +135,9 @@ function toSpot(s: DetourSuggestion): Spot {
         ? Number((s as any).distance)
         : distMFromText ?? 0),
     category: ((s as any).category ?? "local") as Category,
-    // ★ 追加
-    photo_url: typeof photo === "string" ? photo : undefined,
-    photoUrl: typeof photo === "string" ? photo : undefined,
   };
 }
+
 // ====== recommendSpots: GET /detour-guide/search ======きたな修正
 
 export async function recommendSpots(

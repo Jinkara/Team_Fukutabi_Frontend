@@ -12,8 +12,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "types": ["node"],
-    "target": "esnext",
 
     /* ★ きたな追加：ここから */
     "baseUrl": ".",
