@@ -185,3 +185,18 @@
 
 /* 画像下の本文の上マージンを少しだけ */
 .cardBody { margin-top: 6px; }
+
+.mapBox {
+  position: relative;
+  overflow: hidden; /* はみ出し防止 */
+}
+
+/* :global は必ずローカルクラスにネストする */
+.mapBox :global(.leaflet-container) {
+  width: 100%;
+  height: 100%;
+}
+
+.mapBox :global(.leaflet-pane img) {
+  max-width: none !important;
+}
